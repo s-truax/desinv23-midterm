@@ -25,7 +25,12 @@ function setup() {
   
   playButton = createButton("play");
   playButton.position(width / 2 + 100, height / 2);
-  playButton.mousePressed(playFirstSound);
+  // playButton.mousePressed(playFirstSound);
+  playButton.mousePressed(playLatestRecording);
+
+  playFirstButton = createButton("play first sound");
+  playFirstButton.position(width / 2, height / 2 - 100);
+  playFirstButton.mousePressed(playFirstRecording);
 }
 
 function draw() {
@@ -35,7 +40,9 @@ function draw() {
 function recordInput() {
   userStartAudio();
     if (!recording && mic.enabled) {
-      recorder.record(firstSound);
+      soundFile = new p5.SoundFile();
+      sounds.push(soundFile);
+      recorder.record(soundFile);
       recording = true;
   }
 }
@@ -43,6 +50,16 @@ function recordInput() {
 function stopInput() {
   recorder.stop();
   recording = false;
+}
+
+function playLatestRecording() {
+  soundFile = sounds[sounds.length - 1];
+  soundFile.play();
+}
+
+function playFirstRecording() {
+  soundFile = sounds[0];
+  soundFile.play();
 }
 
 function playFirstSound() {
