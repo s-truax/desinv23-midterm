@@ -3,9 +3,14 @@ let recorder;
 let firstSoundFile;
 let sounds = [];
 let recording = false;
+let looper;
+let metronome = false;
+let metronomeBPM = 120;
 
 function setup() {
   createCanvas(600, 600);
+
+  userStartAudio();
   
   mic = new p5.AudioIn();
   mic.start();
@@ -31,6 +36,16 @@ function setup() {
   playFirstButton = createButton("play first sound");
   playFirstButton.position(width / 2, height / 2 - 100);
   playFirstButton.mousePressed(playFirstRecording);
+
+  metronomeButton = createButton("metronome");
+  metronomeButton.position(width / 2, height / 2 + 100);
+  metronomeButton.mousePressed(playMetronome);
+
+  metronomeSynth = new p5.MonoSynth();
+
+  // 4 / 4 time. 4n is a quarter note.
+  metronomeLooper = new p5.SoundLoop(metronomeSound, "4n");
+  metronomeLooper.bpm = metronomeBPM;
 }
 
 function draw() {
@@ -64,4 +79,19 @@ function playFirstRecording() {
 
 function playFirstSound() {
   firstSound.play();
+}
+
+function playMetronome() {
+  if (!metronome) {
+    metronome = true;
+    metronomeLooper.start();
+  } else {
+    metronome = false;
+    metronomeLooper.stop();
+  }
+  console.log(metronome);
+}
+
+function metronomeSound(timeFromNow) {
+  metronomeSynth.play("A6", 0.5);
 }
